@@ -17,12 +17,7 @@ ARG APP_NAME
 WORKDIR /app
 
 # Install host build dependencies.
-RUN apk add --no-cache clang lld musl-dev git
-# Install necessary development packages
-RUN apk update && \
-    apk add --no-cache \
-    musl-dev \
-    linux-headers
+RUN apk update && apk add --no-cache clang lld musl-dev linux-headers libcap 
 
 # Build the application.
 # Leverage a cache mount to /usr/local/cargo/registry/
@@ -40,6 +35,8 @@ RUN --mount=type=bind,source=src,target=src \
     --mount=type=cache,target=/usr/local/cargo/registry/ \
 cargo build --locked --release && \
 cp ./target/release/$APP_NAME /bin/server
+
+RUN setcap cap_net_admin=eip /bin/server
 
 ################################################################################
 # Create a new stage for running the application that contains the minimal
