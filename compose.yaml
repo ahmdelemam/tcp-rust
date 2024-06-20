@@ -22,6 +22,27 @@ services:
     # Specify the user under which the container runs
     user: appuser
 
+  wireshark:
+    image: lscr.io/linuxserver/wireshark:latest
+    container_name: wireshark
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined #optional
+    network_mode: host
+    environment:
+      - PUID=501
+      - PGID=20
+      - TZ=Etc/UTC
+    volumes:
+      - wireshark:/config
+    ports:
+      - 3000:3000 #optional
+    restart: unless-stopped
+
+volumes:
+  wireshark:
+
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the

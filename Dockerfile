@@ -36,7 +36,7 @@ RUN --mount=type=bind,source=src,target=src \
 cargo build --locked --release && \
 cp ./target/release/$APP_NAME /bin/server
 
-RUN setcap cap_net_admin=eip /bin/server
+RUN setcap cap_net_admin,cap_net_bind_service=eip /bin/server
 
 ################################################################################
 # Create a new stage for running the application that contains the minimal
